@@ -53,7 +53,8 @@ function getMetaAtual() {
 }
 
 function updateUI() {
-    document.getElementById('total-today').innerText = userData.history[todayKey] || 0;
+    const hoje = userData.history[todayKey] || 0;
+    document.getElementById('total-today').innerText = hoje;
     document.getElementById('streak-count').innerText = userData.streak;
     document.getElementById('grand-total').innerText = userData.grandTotal;
     
@@ -87,18 +88,30 @@ function iniciarSessao() {
     }, 1000);
 }
 
-function removerReps(qtd) {
-    const hoje = userData.history[todayKey] || 0;
-    if (hoje > 0) {
-        const remover = Math.min(hoje, qtd);
-        userData.history[todayKey] -= remover;
-        userData.grandTotal = Math.max(0, userData.grandTotal - remover);
+// LÓGICA DO SLIDER
+function atualizarLabelAjuste(valor) {
+    document.getElementById('adjust-label').innerText = `Remover: ${valor}`;
+}
+
+function aplicarAjuste() {
+    const slider = document.getElementById('adjust-slider');
+    const qtdParaRemover = parseInt(slider.value);
+    
+    if (qtdParaRemover > 0) {
+        userData.history[todayKey] -= qtdParaRemover;
+        userData.grandTotal = Math.max(0, userData.grandTotal - qtdParaRemover);
+        
         if (sessaoAtiva) {
-            sessionCounter = Math.max(0, sessionCounter - remover);
+            sessionCounter = Math.max(0, sessionCounter - qtdParaRemover);
             document.getElementById('session-count').innerText = sessionCounter;
         }
+        
         saveData();
         renderHistory();
+        
+        // Reset do slider após aplicar
+        slider.value = 0;
+        atualizarLabelAjuste(0);
     }
 }
 
@@ -171,11 +184,17 @@ function formatDateString(d) {
 function renderHistory() {
     const list = document.getElementById('history-list');
     list.innerHTML = "";
-    // Pega as últimas 5 datas únicas
     const dates = Object.keys(userData.history).sort().reverse().slice(0, 5);
     dates.forEach(d => {
         list.innerHTML += `<div class="history-item"><span>${formatDateString(d)}</span> <b>${userData.history[d]} reps</b></div>`;
     });
+
+    // Atualiza o slider de acordo com a contagem de hoje
+    const hoje = userData.history[todayKey] || 0;
+    const slider = document.getElementById('adjust-slider');
+    slider.max = hoje;
+    slider.value = 0;
+    atualizarLabelAjuste(0);
 }
 
 const camera = new Camera(videoElement, { onFrame: async () => { await pose.send({image: videoElement}); }, width: 640, height: 480 });

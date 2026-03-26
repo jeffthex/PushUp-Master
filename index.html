@@ -26,7 +26,6 @@
         .stat-card { background: var(--card); padding: 10px; border-radius: 12px; min-width: 80px; text-align: center; border: 1px solid #333; }
         .stat-label { font-size: 9px; text-transform: uppercase; color: #8E8E93; }
         .stat-value { font-size: 20px; font-weight: bold; color: var(--main-color); }
-        .streak-val { color: #ff9500; }
 
         #history-wrapper { position: fixed; right: 15px; top: 130px; display: flex; flex-direction: column; align-items: center; z-index: 160; }
         #history-label { font-size: 10px; text-transform: uppercase; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 4px; }
@@ -36,10 +35,12 @@
         #history-panel.open { right: 0; }
         .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #333; }
         
-        #adjust-area { margin-top: 30px; padding: 15px; background: #262626; border-radius: 15px; text-align: center; }
-        .adjust-title { font-size: 12px; color: #8E8E93; text-transform: uppercase; margin-bottom: 10px; }
-        .adjust-btns { display: flex; justify-content: center; gap: 10px; }
-        .btn-minus { background: #444; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; }
+        /* Painel de Ajuste com Slider */
+        #adjust-area { margin-top: 30px; padding: 20px; background: #262626; border-radius: 15px; text-align: center; border: 1px solid #444; }
+        .adjust-title { font-size: 12px; color: #8E8E93; text-transform: uppercase; margin-bottom: 15px; }
+        #adjust-slider { width: 100%; margin: 20px 0; accent-color: var(--main-color); }
+        #adjust-label { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 15px; display: block; }
+        #btn-apply-adjust { background: var(--main-color); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; width: 100%; text-transform: uppercase; }
 
         #progress-container { width: 80%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 15px; overflow: hidden; border: 1px solid #444; }
         #progress-fill { width: 0%; height: 100%; background: var(--main-color); transition: width 0.4s ease-out; box-shadow: 0 0 10px var(--main-color); }
@@ -97,11 +98,10 @@
         <div id="history-list"></div>
         
         <div id="adjust-area">
-            <div class="adjust-title">Corrigir contagem de hoje</div>
-            <div class="adjust-btns">
-                <button class="btn-minus" onclick="removerReps(1)">- 1</button>
-                <button class="btn-minus" onclick="removerReps(5)">- 5</button>
-            </div>
+            <div class="adjust-title">Remover erros de hoje</div>
+            <span id="adjust-label">Remover: 0</span>
+            <input type="range" id="adjust-slider" min="0" max="0" value="0" oninput="atualizarLabelAjuste(this.value)">
+            <button id="btn-apply-adjust" onclick="aplicarAjuste()">Aplicar Alteração</button>
         </div>
 
         <p style="margin-top:20px; font-weight: bold;">TOTAL ACUMULADO: <span id="grand-total" style="color: var(--main-color);">0</span></p>
