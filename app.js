@@ -25,12 +25,14 @@ pose.onResults((results) => {
   canvasElement.width = results.image.width;
   canvasElement.height = results.image.height;
 
-  // --- Lógica de Contagem (Inalterada) ---
-  const shoulderY = results.poseLandmarks[11].y; // Pega o Y do ombro esquerdo
-  if (shoulderY > 0.6) {
+  // --- Lógica de Contagem (Otimizada para posição de LADO) ---
+  const shoulderY = results.poseLandmarks[11].y; // Pega o Y do ombro
+  
+  // Limites mais rígidos para melhor contagem
+  if (shoulderY > 0.65) {
     stage = "down";
   }
-  if (shoulderY < 0.4 && stage === "down") {
+  if (shoulderY < 0.35 && stage === "down") {
     stage = "up";
     counter++;
     countDisplay.innerText = counter;
@@ -39,14 +41,32 @@ pose.onResults((results) => {
   // --- NOVA LÓGICA DE DESENHO DO ESQUELETO ---
   canvasCtx.save();
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  
-  // Desenha os conectores (as linhas entre as juntas do corpo, incluindo braços/ombros)
-  drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
-                 {color: '#00FF00', lineWidth: 4}); // Verde neon para as linhas
 
-  // Desenha os landmarks (os pontos circulares nas juntas, ex: cotovelo, pulso)
+  // 1. Filtragem do Rosto: Criamos uma lista de conexões SEM os pontos 0-10 (rosto)
+  const filteredPoseConnections = [
+    // Tronco
+    [11, 12], // Ombro-Ombro
+    [11, 23], // Ombro Esq-Quadril Esq
+    [12, 24], // Ombro Dir-Quadril Dir
+    [23, 24], // Quadril-Quadril
+    // Braços (Destaque para flexão)
+    [11, 13], [13, 15], // Braço Esq
+    [12, 14], [14, 16], // Braço Dir
+    // Pernas (Tronco e Pernas solicitados)
+    [23, 25], [25, 27], [27, 29], [29, 31], // Perna Esq
+    [24, 26], [26, 28], [28, 30], [30, 32]  // Perna Dir
+  ];
+  
+  // 2. Desenha os conectores (Linhas Brancas Translúcidas)
+  drawConnectors(canvasCtx, results.poseLandmarks, filteredPoseConnections,
+                 {color: 'rgba(255, 255, 255, 0.5)', lineWidth: 3}); // rgba(255,255,255,0.5) é branco com 50% transparência
+
+  // 3. Desenha os landmarks (Pontos Vermelhos nas Conexões)
+  // Nota: Isso desenha todos os pontos detectados, incluindo o rosto (apenas pontos vermelhos). 
+  // Filtrar apenas pontos específicos do corpo sem as linhas é mais complexo em JS.
+  // Começamos removendo as linhas do rosto primeiro.
   drawLandmarks(canvasCtx, results.poseLandmarks,
-                {color: '#FF0000', lineWidth: 2, radius: 2}); // Vermelho para os pontos
+                {color: '#FF0000', lineWidth: 1, radius: 2}); // Vermelho para os pontos
   
   canvasCtx.restore();
 });
