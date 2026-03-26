@@ -22,14 +22,12 @@
         :root { --main-color: #FF0000; --bg: #000; --card: #1C1C1E; }
         body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; margin: 0; overflow: hidden; }
         
-        /* Z-index 160 para ficar acima do START overlay */
         #header { position: fixed; top: 0; width: 100%; padding: 40px 10px 10px; display: flex; justify-content: space-around; z-index: 160; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
         .stat-card { background: var(--card); padding: 10px; border-radius: 12px; min-width: 80px; text-align: center; border: 1px solid #333; }
         .stat-label { font-size: 9px; text-transform: uppercase; color: #8E8E93; }
         .stat-value { font-size: 20px; font-weight: bold; color: var(--main-color); }
         .streak-val { color: #ff9500; }
 
-        /* Z-index 160 para permitir clique com START ativo */
         #history-wrapper { position: fixed; right: 15px; top: 130px; display: flex; flex-direction: column; align-items: center; z-index: 160; }
         #history-label { font-size: 10px; text-transform: uppercase; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 4px; }
         #history-btn { width: 50px; height: 50px; background-color: var(--card); background-image: url('icon.png'); background-size: cover; background-position: center; border: 2px solid #333; border-radius: 50%; outline: none; box-shadow: 0 4px 10px rgba(255,0,0,0.3); }
@@ -38,8 +36,13 @@
         #history-panel.open { right: 0; }
         .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #333; }
         
-        #reset-today-btn { background: #262626; border: 1px solid #444; color: #8E8E93; padding: 12px 20px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-top: auto; align-self: center; width: 100%; transition: 0.3s; }
-        #reset-today-btn.active { background: var(--main-color); color: white; border-color: transparent; }
+        /* Botão Reset no Histórico */
+        #reset-today-btn { 
+            background: #262626; border: 1px solid #444; color: #ffffff; padding: 15px; 
+            border-radius: 15px; font-weight: 700; font-size: 14px; margin-top: 20px; width: 100%; 
+            transition: 0.3s; text-transform: uppercase;
+        }
+        #reset-today-btn.active { background: var(--main-color); box-shadow: 0 0 15px var(--main-color); }
 
         #progress-container { width: 80%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 15px; overflow: hidden; border: 1px solid #444; }
         #progress-fill { width: 0%; height: 100%; background: var(--main-color); transition: width 0.4s ease-out; box-shadow: 0 0 10px var(--main-color); }
@@ -49,25 +52,23 @@
         
         #feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; opacity: 0; transition: 0.2s; z-index: 200; pointer-events: none; }
         
-        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 150; display: flex; justify-content: center; align-items: center; visibility: visible; transition: opacity 0.5s; opacity: 1; }
-        #start-overlay.hidden { visibility: hidden; opacity: 0; }
-        #start-btn { background: var(--main-color); color: white; border: none; padding: 25px 60px; border-radius: 40px; font-size: 32px; font-weight: 800; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(255,0,0,0.6); animation: pulse 1.5s infinite; transition: 0.3s; }
-        
-        #countdown-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 180; font-size: 150px; font-weight: 900; color: #ffffff; text-shadow: 0 0 20px rgba(255,255,255,0.7); pointer-events: none; opacity: 0; transition: opacity 0.2s; }
-        #countdown-container.visible { opacity: 1; }
-        #countdown-container span { display: block; animation: countdownAnimation 1s forwards; }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 150; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        #start-overlay.hidden { visibility: hidden; opacity: 0; pointer-events: none; }
+        #start-btn { 
+            background: var(--main-color); color: white; border: none; padding: 20px 50px; 
+            border-radius: 20px; font-size: 32px; font-weight: 900; 
+            box-shadow: 0 10px 30px rgba(255,0,0,0.5); transition: 0.2s;
         }
+        #start-btn:active { transform: scale(0.95); }
+        
+        #countdown-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 180; font-size: 120px; font-weight: 900; color: #fff; pointer-events: none; }
+        .countdown-number { animation: fadeOut 1s forwards; display: block; text-align: center; }
 
-        @keyframes countdownAnimation {
+        @keyframes fadeOut {
             0% { transform: scale(2); opacity: 0; }
-            10% { transform: scale(1); opacity: 1; }
+            20% { transform: scale(1); opacity: 1; }
             80% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(0.5); opacity: 0; }
         }
 
         #footer { position: fixed; bottom: 0; width: 100%; padding: 20px 0 40px; display: flex; flex-direction: column; align-items: center; z-index: 100; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
@@ -103,8 +104,8 @@
     </div>
 
     <div id="history-panel">
-        <button onclick="toggleHistory()" style="background:none; color:white; border:none; margin-bottom:20px; font-size:16px;">✖ Fechar</button>
-        <h3>Histórico Recente</h3>
+        <button onclick="toggleHistory()" style="background:none; color:white; border:none; margin-bottom:20px; font-size:16px; text-align: left;">✖ FECHAR</button>
+        <h3>HISTÓRICO RECENTE</h3>
         <div id="history-list"></div>
         <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
         <p>Total Acumulado: <span id="grand-total">0</span></p>
@@ -129,10 +130,6 @@
     <script>
         function toggleHistory() {
             document.getElementById('history-panel').classList.toggle('open');
-            const resetBtn = document.getElementById('reset-today-btn');
-            resetBtn.innerText = 'ZERAR CONTAGEM HOJE';
-            resetBtn.classList.remove('active');
-            confirmReset = false;
             if(document.getElementById('history-panel').classList.contains('open')) renderHistory();
         }
     </script>
