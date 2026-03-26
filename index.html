@@ -4,38 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="manifest" href="manifest.json">
-    <title>PushUp AI</title>
+    <title>FLEX AI</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+    
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignal.SDK.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(function(oneSignal) {
+        oneSignal.init({
+          appId: "1f97b903-8c5f-4d29-b3b7-14f58d8f835b",
+        });
+      });
+    </script>
+
     <style>
         :root { --apple-blue: #007AFF; --bg: #000; --card: #1C1C1E; }
-        body { background: var(--bg); color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; overflow: hidden; }
-        
-        /* Dashboard Superior */
-        #header { 
-            position: fixed; top: 0; width: 100%; padding: 40px 20px 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            display: flex; justify-content: space-around; z-index: 100;
-        }
-        .stat-card { background: var(--card); padding: 15px; border-radius: 15px; min-width: 100px; text-align: center; border: 1px solid #333; }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; margin: 0; overflow: hidden; }
+        #header { position: fixed; top: 0; width: 100%; padding: 40px 20px 20px; display: flex; justify-content: space-around; z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
+        .stat-card { background: var(--card); padding: 15px; border-radius: 15px; min-width: 110px; text-align: center; border: 1px solid #333; }
         .stat-label { font-size: 10px; text-transform: uppercase; color: #8E8E93; margin-bottom: 5px; }
         .stat-value { font-size: 24px; font-weight: bold; color: var(--apple-blue); }
-
-        /* Camera */
         .video-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
         video, canvas { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-
-        /* Feedback de Movimento (Opcional: pisca quando conta) */
-        #feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; opacity: 0; pointer-events: none; transition: 0.2s; z-index: 200; }
-
-        /* Menu Inferior */
-        #footer { 
-            position: fixed; bottom: 0; width: 100%; padding: 20px 0 40px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            display: flex; flex-direction: column; align-items: center; z-index: 100;
-        }
-        button { background: var(--apple-blue); color: white; border: none; padding: 12px 25px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+        #feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; opacity: 0; transition: 0.2s; z-index: 200; pointer-events: none; }
+        #footer { position: fixed; bottom: 0; width: 100%; padding: 20px 0 40px; display: flex; justify-content: center; z-index: 100; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+        button { background: var(--apple-blue); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-weight: 600; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -49,18 +45,14 @@
             <div id="total-today" class="stat-value">0</div>
         </div>
     </div>
-
     <div id="feedback">🔥</div>
-
     <div class="video-container">
         <video id="input_video" playsinline></video>
         <canvas id="output_canvas"></canvas>
     </div>
-
     <div id="footer">
-        <button onclick="ativarNotificacao()">Configurar Lembretes</button>
+        <button onclick="ativarNotificacao()">Ativar Som e Alertas</button>
     </div>
-
     <script src="app.js"></script>
 </body>
 </html>
